@@ -1,0 +1,2 @@
+../Core/Src/LDRSensor.cpp:10:1:LDRSensor::LDRSensor(GPIO_TypeDef*, uint16_t)	24	static
+../Core/Src/LDRSensor.cpp:13:6:bool LDRSensor::isLightDetected()	24	static

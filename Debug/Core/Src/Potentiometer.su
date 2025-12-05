@@ -1,0 +1,3 @@
+../Core/Src/Potentiometer.cpp:11:1:ADCDevice::ADCDevice(ADC_HandleTypeDef*)	16	static
+../Core/Src/Potentiometer.cpp:14:10:uint16_t ADCDevice::readRaw()	40	static
+../Core/Src/Potentiometer.cpp:31:9:uint8_t ADCDevice::readPercentage()	24	static

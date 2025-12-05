@@ -1,0 +1,5 @@
+../Core/Src/Thermistor.cpp:11:1:ThermistorModule::ThermistorModule(ADC_HandleTypeDef*, GPIO_TypeDef*, uint16_t)	24	static
+../Core/Src/Thermistor.cpp:14:10:uint16_t ThermistorModule::readRawADC()	24	static
+../Core/Src/Thermistor.cpp:22:7:float ThermistorModule::readVoltage()	24	static
+../Core/Src/Thermistor.cpp:27:6:bool ThermistorModule::isThresholdExceeded()	16	static
+../Core/Src/Thermistor.cpp:31:7:float ThermistorModule::getTemperatureCelsius()	40	static
