@@ -1,132 +1,121 @@
-🚦 Smart Traffic Light System (STM32 + FreeRTOS)
+# 🚦 Smart Traffic Light System (STM32 + FreeRTOS)
 
-This project implements a smart, congestion-adaptive traffic light controller using an STM32 microcontroller. The system uses ultrasonic sensors, TM1637 displays, FreeRTOS tasks, and a 4×4 keypad with PIN authentication to control two-lane traffic intelligently.
+This project implements a **smart, congestion-adaptive traffic light controller** using an STM32 microcontroller. The system uses **ultrasonic sensors**, **TM1637 displays**, **FreeRTOS tasks**, and a **4×4 keypad with PIN authentication** to control two-lane traffic intelligently.
 
-📌 Features
-✅ 1. Congestion Detection (Ultrasonic Sensors)
+---
 
-Each lane uses two HCSR04 sensors to detect vehicles.
+## 📌 Features
 
-If both sensors read < 15 cm, the lane is considered congested.
+### ✔️ 1. Congestion Detection (Ultrasonic Sensors)
+- Each lane uses **two HCSR04 sensors**.
+- If both sensors detect < 15 cm distance, the lane is marked *congested*.
+- Dynamic timing:
+  - Congested lane → longer green
+  - Uncongested lane → shorter green
+  - Both congested → equal moderate timing
+  - No congestion → default cycle
 
-Traffic light green times adjust dynamically:
+### ✔️ 2. FreeRTOS-Based Task Management
+- `TrafficLightTask` manages:
+  - Green/Yellow/Red phases
+  - TM1637 countdown displays
+  - Timings based on congestion
+- `password_task`:
+  - Handles keypad PIN authentication
+- `testing`:
+  - Continuously reads sensors for debugging
 
-Lane with congestion gets extended green.
+### ✔️ 3. Keypad PIN Authentication
+- 4-digit password (default: **1234**)
+- Press `*` to start entering the PIN
+- Press `#` to confirm
+- Correct PIN → Access granted & system begins operation  
+- Incorrect PIN → Access denied
 
-Opposing lane gets shorter green.
+### ✔️ 4. Display System
+- Two 4-digit **TM1637** displays show lane countdown timers.
+- LCD displays prompts and messages such as “Welcome”, “Enter PIN”, etc.
 
-Both lanes congested → equal moderate green.
+---
 
-No congestion → default timing.
+## 🧩 Hardware Components
 
-✅ 2. FreeRTOS-Based Task Management
+- STM32 Microcontroller  
+- 4×4 Keypad  
+- TM1637 7-segment Displays (2 units)  
+- HCSR04 Ultrasonic Sensors (4 units)  
+- LED Traffic Signal Modules (Red, Yellow, Green)  
+- LCD Display (16×2 or similar)  
+- Driver circuits, resistors, wiring, etc.
 
-TrafficLightTask handles:
+---
 
-Green / Yellow / Red light sequencing
+## 📁 Main Functional Files
 
-Display countdown on TM1637 modules
+### **`main.c` includes:**
+| Function | Description |
+|----------|-------------|
+| `TrafficLightTask()` | Controls lighting sequence & timer display |
+| `password_task()` | Keypad-based authentication |
+| `testing()` | Debug function for sensor readings |
+| `setup_sensors()` | Initializes all ultrasonic sensors |
+| `traffic_congetion()` | Determines congestion in each lane |
+| `scan_keypad()` | Keypad scanning routine |
 
-Dynamic timing updates based on congestion
+---
 
-password_task manages keypad input and system access control.
+## ⏱ Traffic Light Logic
 
-testing task continuously reads sensor data for debugging.
+### Timing rules:
+- **Lane 1 congested:**  
+  - Lane 1 green: 20s  
+  - Lane 2 green: 8s  
 
-✅ 3. Keypad PIN Authentication
+- **Lane 2 congested:**  
+  - Lane 2 green: 20s  
+  - Lane 1 green: 8s  
 
-4-digit PIN (default: 1234)
+- **Both congested:**  
+  - Both get 15s green  
 
-Press * to enter PIN mode
+- **No congestion:**  
+  - Both lanes: 12s green  
 
-Press # to submit
+**Yellow duration:** 3 seconds.
 
-Correct PIN → traffic starts
+---
 
-Wrong PIN → “Access Denied”
+## 🔐 PIN System Flow
 
-✅ 4. Display Systems
+1. System boots → “Welcome” message  
+2. User presses `*`  
+3. Enter 4-digit PIN (displayed as ****)  
+4. Press `#` to confirm  
+5.  
+   - ✔ Correct PIN → Access granted → Both lanes red for 10 seconds → Traffic system starts  
+   - ✖ Incorrect PIN → “Access Denied”  
 
-Two TM1637 4-digit displays show countdown timers for each lane.
+---
 
-LCD displays user prompts and messages.
+## 🔧 How to Build and Flash
 
-🧩 System Components
-Hardware Used
+1. Open in **STM32CubeIDE**  
+2. Build the project  
+3. Connect ST-Link  
+4. Flash firmware to the microcontroller  
+5. System runs automatically
 
-STM32 microcontroller
+---
 
-4×4 matrix keypad
+## 📈 Possible Future Enhancements
+- Mobile or web dashboard  
+- Emergency vehicle priority mode  
+- Real-time traffic analytics  
+- IoT-based remote monitoring  
 
-TM1637 7-segment displays
+---
 
-HCSR04 ultrasonic sensors (4 units total)
+## 📜 License
+This project is provided under the **MIT License** unless otherwise specified.
 
-LCD (16x2 or compatible)
-
-Traffic light LED signals (Green, Yellow, Red)
-
-Driver circuits + GPIO interface
-
-📁 Project Structure
-
-Main functionality is handled inside main.c:
-
-Function	Purpose
-TrafficLightTask()	Controls traffic timing & displays
-password_task()	Keypad authentication
-testing()	Live sensor reading
-setup_sensors()	Initialize all HCSR04 modules
-traffic_congetion()	Lane congestion logic
-scan_keypad()	Keypad scanning routine
-⏱ Traffic Light Timing Logic
-
-Timing values automatically adjust:
-
-Example:
-
-Lane 1 congested → Lane 1 green = 20s, Lane 2 green = 8s
-
-Lane 2 congested → Lane 2 green = 20s, Lane 1 green = 8s
-
-Both congested → both get 15s green
-
-No congestion → each gets 12s green
-
-Yellow is always 3 seconds.
-
-🛡 Access Control Workflow
-
-System starts with a Welcome message.
-
-User presses * to start PIN entry.
-
-PIN appears as **** on LCD.
-
-Correct PIN → both lanes set to red for 10 seconds → system activates.
-
-🔧 How to Build & Flash
-
-Open the project using STM32CubeIDE
-
-Generate code (if modifying .ioc)
-
-Build project
-
-Flash to STM32 board using ST-Link
-
-Start system
-
-📸 Future Enhancements (Optional)
-
-IoT remote monitoring
-
-Cloud-based traffic analytics
-
-Emergency vehicle priority mode
-
-Web control panel
-
-📜 License
-
-This project is provided under MIT License unless otherwise specified.
+---
